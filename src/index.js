@@ -10,9 +10,16 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 // import HelloReact from "./containers/HelloReact";
 import HelloReact from "./components/HelloReact";
-{
-    /* <HelloReact /> */
-}
+
+// componentDidMount() {
+//     //   console.log()
+//     HttpServiceManager.initialize(constant.baseURL, {
+//       token: constant.applicationToken,
+//     });
+//     //set designedAtX verify it on Adobe XD Desgin file
+//     //Metrics.designedAtX = false;
+//   }
+
 render(
     <Provider store={store}>
         <div>
