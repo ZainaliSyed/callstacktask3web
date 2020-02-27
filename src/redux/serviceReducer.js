@@ -33,6 +33,14 @@ export default type => {
                     errorMessage: action.errorMessage
                 };
 
+            case type.ADD_OBJECT:
+                const tempData = _.cloneDeep(state.data);
+                let a = { ...tempData, ...action.data };
+                return {
+                    ...state,
+                    data: a
+                };
+
             default:
                 return state;
         }

@@ -47,3 +47,17 @@ export function failure(types, errorMessage) {
         type: types.FAILURE
     };
 }
+
+export function generalSaveAction(
+    type: string,
+    data: object,
+    isConcat: Boolean = false,
+    meta: Object
+) {
+    return {
+        type,
+        data,
+        isConcat,
+        meta
+    };
+}

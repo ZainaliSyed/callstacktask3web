@@ -180,14 +180,13 @@ class HttpServiceManager {
         HttpServiceManager.getInstance().axiosInstance = axios.create({
             baseURL: baseURL,
             timeout: 60000,
-            headers: authHeader,
-            Authorization: 'Access-Control-Allow-Origin", "*"'
+            headers: authHeader
         });
         HttpServiceManager.getInstance().axiosInstance.interceptors.request.use(
             function(config) {
-                config.headers[
-                    "user-token"
-                ] = HttpServiceManager.getInstance().userToken;
+                // config.headers[
+                //     "user-token"
+                // ] = HttpServiceManager.getInstance().userToken;
                 return config;
             },
             function(error) {
