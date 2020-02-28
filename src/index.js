@@ -13,7 +13,7 @@ import HelloReact from "./components/HelloReact";
 render(
     <Provider store={store}>
         <div>
-            <h1>Hello, world!</h1>
+            <h1>Search your github Repo </h1>
             <HelloReact />
         </div>
     </Provider>,

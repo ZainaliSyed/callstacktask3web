@@ -41,6 +41,10 @@ class HelloReact extends Component {
         HttpServiceManager.initialize(constant.baseURL, {
             Authorization: 'Access-Control-Allow-Origin", "*"'
         });
+        // localStorage.setItem(
+        //     "repoStorage",
+        //     JSON.stringify({ abc: { a: "a" } })
+        // );
     }
 
     // searchHandler = value => {
@@ -62,6 +66,14 @@ class HelloReact extends Component {
     // };
 
     searchHandler = (value, storeData) => {
+        let localstoreData = localStorage.getItem("repoStorage");
+
+        console.log("localstoreData ***   : ", JSON.parse(localstoreData));
+        console.log(
+            "localstoreData ***   : ",
+            JSON.parse(localstoreData)[refectorValue]
+        );
+
         var refectorValue = value.replace(/[^A-Z0-9]+/gi, "+");
         if (refectorValue[0] === "+") {
             console.log("1 ");
@@ -69,9 +81,9 @@ class HelloReact extends Component {
         }
         if (refectorValue.indexOf("+") != -1) {
             console.log("2 ");
-            if (storeData[refectorValue]) {
+            if (JSON.parse(localstoreData)[refectorValue]) {
                 // this.setState({ setList(storeData[refectorValue])});
-                this.setState({ setList: storeData[refectorValue] });
+                this.setState({ setList: localstoreData[refectorValue] });
             } else {
                 console.log("3  dispatch");
                 store.dispatch(
@@ -99,6 +111,9 @@ class HelloReact extends Component {
             generalSaveAction(SEARCH_DATA_STORAGE.ADD_OBJECT, { [key]: data })
         );
         this.setState({ setList: data });
+        localStorage.setItem("repoStorage", JSON.stringify({ [key]: data }));
+        // localStorage.setItem("repoStorage", JSON.stringify(data));
+
         // setList(data);
     };
 
@@ -126,6 +141,7 @@ class HelloReact extends Component {
                     <button
                         onClick={() => {
                             const { value } = this.state;
+
                             this.searchHandler(value, searchDataStorage);
                         }}
                     >
@@ -140,6 +156,7 @@ class HelloReact extends Component {
                     striped
                     hover
                     condensed
+                    pagination
                 >
                     <TableHeaderColumn
                         dataField="id"
