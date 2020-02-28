@@ -1,91 +1,38 @@
-import React, { PureComponent, Component } from "react";
-// import PropTypes from "prop-types";
-// import { Component } from "react";
-
-// import * as styles from "./styles.scss";
+import React, { Component } from "react";
 import store from "../../redux/store";
 import { SEARCH_REPO, SEARCH_DATA_STORAGE } from "../../actions/ActionTypes";
 import { request, generalSaveAction } from "../../actions/ServiceAction";
 import constant from "../../constant";
 import HttpServiceManager from "../../service/HttpServiceManager";
 import { TableHeaderColumn, BootstrapTable } from "react-bootstrap-table";
-import { connect } from "react-redux";
 
 class HelloReact extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // repo: [
-            //     {
-            //         id: 1,
-            //         name: "Wasif",
-            //         owner: 21,
-            //         star: "wasif@email.com",
-            //         date: "18-19-2929"
-            //     },
-            //     {
-            //         id: 2,
-            //         name: "Ali",
-            //         owner: 19,
-            //         star: "ali@email.com",
-            //         date: "18-19-2929"
-            //     }
-            // ],
             value: "",
             setList: []
         };
     }
 
     componentDidMount() {
-        console.log("componentDidMount chala ");
         HttpServiceManager.initialize(constant.baseURL, {
             Authorization: 'Access-Control-Allow-Origin", "*"'
         });
-        // localStorage.setItem(
-        //     "repoStorage",
-        //     JSON.stringify({ abc: { a: "a" } })
-        // );
     }
 
-    // searchHandler = value => {
-    //     store.dispatch(
-    //         request(
-    //             `${constant.SEARCH_REPO}react+native+splash+screen`,
-    //             "get",
-    //             {},
-    //             SEARCH_REPO,
-    //             true,
-    //             () => {
-    //                 // alert("success");
-    //             },
-    //             () => {
-    //                 alert("falil");
-    //             }
-    //         )
-    //     );
-    // };
-
-    searchHandler = (value, storeData) => {
+    searchHandler = value => {
         let localstoreData = localStorage.getItem("repoStorage");
-
-        console.log("localstoreData ***   : ", JSON.parse(localstoreData));
-        console.log(
-            "localstoreData ***   : ",
-            JSON.parse(localstoreData)[refectorValue]
-        );
-
         var refectorValue = value.replace(/[^A-Z0-9]+/gi, "+");
         if (refectorValue[0] === "+") {
-            console.log("1 ");
             refectorValue = refectorValue.slice(1);
         }
         if (refectorValue.indexOf("+") != -1) {
-            console.log("2 ");
-            if (JSON.parse(localstoreData)[refectorValue]) {
-                // this.setState({ setList(storeData[refectorValue])});
-                this.setState({ setList: localstoreData[refectorValue] });
+            if (localstoreData && JSON.parse(localstoreData)[refectorValue]) {
+                this.setState({
+                    setList: JSON.parse(localstoreData)[refectorValue]
+                });
             } else {
-                console.log("3  dispatch");
                 store.dispatch(
                     request(
                         `${constant.SEARCH_REPO}${refectorValue}`,
@@ -94,11 +41,7 @@ class HelloReact extends Component {
                         SEARCH_REPO,
                         true,
                         res => {
-                            this.searchSuccess(
-                                res.data.items,
-                                this.state.setList,
-                                refectorValue
-                            );
+                            this.searchSuccess(res.data.items, refectorValue);
                         },
                         () => {}
                     )
@@ -106,24 +49,30 @@ class HelloReact extends Component {
             }
         }
     };
-    searchSuccess = (data, setList, key) => {
+    searchSuccess = (data, key) => {
         store.dispatch(
             generalSaveAction(SEARCH_DATA_STORAGE.ADD_OBJECT, { [key]: data })
         );
         this.setState({ setList: data });
-        localStorage.setItem("repoStorage", JSON.stringify({ [key]: data }));
-        // localStorage.setItem("repoStorage", JSON.stringify(data));
-
-        // setList(data);
+        let localstoreData = localStorage.getItem("repoStorage");
+        if (JSON.parse(localstoreData)) {
+            localStorage.setItem(
+                "repoStorage",
+                JSON.stringify(
+                    Object.assign({}, JSON.parse(localstoreData), {
+                        [key]: data
+                    })
+                )
+            );
+        } else {
+            localStorage.setItem(
+                "repoStorage",
+                JSON.stringify({ [key]: data })
+            );
+        }
     };
 
     render() {
-        const { searchDataStorage } = this.props;
-        const { setList } = this.state;
-        console.log("dekjekjk : ", searchDataStorage, " setList : ", setList);
-        // const owner = setList.owner.login;
-        // console.log("cehck  : ", owner);
-
         return (
             <div>
                 <form action="javasscript:void(0)">
@@ -141,12 +90,10 @@ class HelloReact extends Component {
                     <button
                         onClick={() => {
                             const { value } = this.state;
-
-                            this.searchHandler(value, searchDataStorage);
+                            this.searchHandler(value);
                         }}
                     >
-                        {" "}
-                        Search{" "}
+                        Search
                     </button>
                 </form>
 
@@ -196,13 +143,4 @@ class HelloReact extends Component {
     }
 }
 
-// export default HelloReact;
-
-const actions = {};
-const mapStateToProps = ({ searchDataStorage }) => {
-    return {
-        searchDataStorage: searchDataStorage.data
-    };
-};
-
-export default connect(mapStateToProps, actions)(HelloReact);
+export default HelloReact;
